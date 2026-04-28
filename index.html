@@ -3,338 +3,314 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>在庫管理システム - Premium Dashboard</title>
+    <title>在庫ダッシュボード</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-base: #0f172a;
             --bg-accent: #1e293b;
             --primary: #3b82f6;
-            --primary-hover: #2563eb;
-            --secondary: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            --danger: #ef4444;
             --glass-bg: rgba(30, 41, 59, 0.7);
             --glass-border: rgba(255, 255, 255, 0.1);
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: 'Outfit', sans-serif;
-            background: radial-gradient(circle at top left, #1e1b4b, var(--bg-base), #020617);
+            background: #020617;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(30, 27, 75, 1) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(15, 23, 42, 1) 0px, transparent 50%);
             color: var(--text-main);
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        /* Abstract Background Elements */
-        .bg-blob {
-            position: absolute;
-            filter: blur(80px);
-            z-index: 0;
-            border-radius: 50%;
-            opacity: 0.5;
-            animation: float 10s infinite alternate ease-in-out;
-        }
-        .blob-1 {
-            width: 400px;
-            height: 400px;
-            background: #4f46e5;
-            top: -100px;
-            left: -100px;
-        }
-        .blob-2 {
-            width: 300px;
-            height: 300px;
-            background: #0ea5e9;
-            bottom: -50px;
-            right: -50px;
-            animation-delay: -5s;
-        }
-
-        @keyframes float {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(30px, 50px) scale(1.1); }
+            padding: 40px 20px;
         }
 
         .container {
-            position: relative;
-            z-index: 1;
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            padding: 40px;
-            width: 100%;
-            max-width: 480px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(40px); }
-            to { opacity: 1; transform: translateY(0); }
+            max-width: 1000px;
+            margin: 0 auto;
         }
 
         .header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
+            animation: fadeInDown 0.8s ease-out;
         }
 
         .header h1 {
-            font-size: 2rem;
+            font-size: 2.5rem;
             font-weight: 800;
-            background: linear-gradient(to right, #60a5fa, #a78bfa);
+            background: linear-gradient(135deg, #60a5fa, #c084fc);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
 
-        .header p {
-            color: var(--text-muted);
-            font-weight: 300;
+        .header p { color: var(--text-muted); }
+
+        .dashboard-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
         }
 
-        .form-group {
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 0.9rem;
+        .refresh-btn {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
             font-weight: 600;
-            color: #cbd5e1;
-            transition: color 0.3s;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .form-control {
-            width: 100%;
-            padding: 14px 16px;
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            color: white;
-            font-family: inherit;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            outline: none;
+        .refresh-btn:hover {
+            background: rgba(59, 130, 246, 0.3);
+            transform: translateY(-2px);
         }
 
-        .form-control:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
-            background: rgba(15, 23, 42, 0.8);
+        .refresh-btn.spinning svg {
+            animation: spin 1s linear infinite;
         }
 
-        .form-control:focus + .form-label {
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 24px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: fadeIn 0.5s ease-out backwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .card.low-stock::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: var(--danger);
+        }
+
+        .item-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #e2e8f0;
+        }
+
+        .stock-level {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .stock-number {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1;
             color: var(--primary);
         }
 
-        .btn-submit {
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, var(--primary), #4f46e5);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
-        }
-
-        .btn-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.4);
-        }
-
-        .btn-submit:active {
-            transform: translateY(1px);
-        }
-
-        /* Loading Animation */
-        .spinner {
-            display: none;
-            width: 24px;
-            height: 24px;
-            border: 3px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-        }
-
-        @keyframes spin {
-            to { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-
-        .btn-text {
-            transition: opacity 0.3s;
-        }
-
-        .is-loading .btn-text {
-            opacity: 0;
-        }
-
-        .is-loading .spinner {
-            display: block;
-        }
-
-        /* Status Message */
-        .status-message {
-            margin-top: 20px;
-            padding: 12px;
-            border-radius: 8px;
-            text-align: center;
-            font-weight: 600;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: all 0.4s ease;
-        }
-
-        .status-message.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .status-success {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--secondary);
-            border: 1px solid rgba(16, 185, 129, 0.2);
-        }
-
-        .status-error {
-            background: rgba(239, 68, 68, 0.1);
+        .card.low-stock .stock-number {
             color: var(--danger);
-            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .stock-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+            padding: 4px 8px;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            display: none;
+        }
+
+        .card.low-stock .badge {
+            display: block;
+            animation: pulse 2s infinite;
+        }
+
+        /* Loading Skeleton */
+        .skeleton {
+            background: linear-gradient(90deg, rgba(30,41,59,0.5) 25%, rgba(51,65,85,0.5) 50%, rgba(30,41,59,0.5) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8px;
+        }
+
+        .skeleton-title { height: 24px; width: 60%; margin-bottom: 16px; }
+        .skeleton-number { height: 48px; width: 40%; }
+
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+
+        .error-state {
+            text-align: center;
+            padding: 40px;
+            color: #fca5a5;
+            background: rgba(239, 68, 68, 0.1);
+            border-radius: 16px;
+            border: 1px dashed rgba(239, 68, 68, 0.3);
+            display: none;
         }
 
     </style>
 </head>
 <body>
-    <div class="bg-blob blob-1"></div>
-    <div class="bg-blob blob-2"></div>
 
     <div class="container">
         <div class="header">
-            <h1>Stock Sync</h1>
-            <p>スマート在庫管理システム</p>
+            <h1>在庫ダッシュボード</h1>
+            <p>現在の在庫状況をリアルタイムに確認</p>
         </div>
 
-        <form id="inventoryForm">
-            <div class="form-group">
-                <label class="form-label" for="itemName">品目名</label>
-                <input type="text" id="itemName" class="form-control" required placeholder="例: A4コピー用紙">
+        <div class="dashboard-controls">
+            <div style="color: var(--text-muted); font-size: 0.9rem;" id="lastUpdateText">
+                最終更新: --
             </div>
-
-            <div class="form-group">
-                <label class="form-label" for="stockIn">入庫数</label>
-                <input type="number" id="stockIn" class="form-control" min="0" value="0">
-            </div>
-
-            <div class="form-group">
-                <label class="form-label" for="stockOut">出庫数</label>
-                <input type="number" id="stockOut" class="form-control" min="0" value="0">
-            </div>
-
-            <button type="submit" class="btn-submit" id="submitBtn">
-                <span class="btn-text">データを送信</span>
-                <div class="spinner"></div>
+            <button class="refresh-btn" id="refreshBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="23 4 23 10 17 10"></polyline>
+                    <polyline points="1 20 1 14 7 14"></polyline>
+                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                </svg>
+                更新
             </button>
-        </form>
+        </div>
 
-        <div id="statusMessage" class="status-message"></div>
+        <div class="error-state" id="errorState">
+            データを取得できませんでした。<br>
+            GASのウェブアプリURLが正しく設定されているか確認してください。
+        </div>
+
+        <div class="grid" id="inventoryGrid">
+            <!-- 初期ローディング用のスケルトンUI -->
+            <div class="card"><div class="skeleton skeleton-title"></div><div class="skeleton skeleton-number"></div></div>
+            <div class="card"><div class="skeleton skeleton-title"></div><div class="skeleton skeleton-number"></div></div>
+            <div class="card"><div class="skeleton skeleton-title"></div><div class="skeleton skeleton-number"></div></div>
+        </div>
     </div>
 
     <script>
         // ⚠️ GASのWebアプリURL（デプロイ後にここを書き換えてください）
         const GAS_WEB_APP_URL = 'YOUR_GAS_WEB_APP_URL_HERE';
 
-        const form = document.getElementById('inventoryForm');
-        const submitBtn = document.getElementById('submitBtn');
-        const statusMessage = document.getElementById('statusMessage');
+        const grid = document.getElementById('inventoryGrid');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const lastUpdateText = document.getElementById('lastUpdateText');
+        const errorState = document.getElementById('errorState');
 
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            // Validate setup
-            if(GAS_WEB_APP_URL === 'YOUR_GAS_WEB_APP_URL_HERE') {
-                showStatus('GASのWebアプリURLが設定されていません。コードを書き換えてください。', 'error');
+        async function fetchStockData() {
+            if (GAS_WEB_APP_URL === 'YOUR_GAS_WEB_APP_URL_HERE') {
+                errorState.style.display = 'block';
+                grid.innerHTML = '';
                 return;
             }
 
-            // Gather data
-            const itemName = document.getElementById('itemName').value;
-            const stockIn = document.getElementById('stockIn').value;
-            const stockOut = document.getElementById('stockOut').value;
-
-            // UI Loading state
-            submitBtn.classList.add('is-loading');
-            submitBtn.disabled = true;
-            statusMessage.classList.remove('show');
+            refreshBtn.classList.add('spinning');
+            errorState.style.display = 'none';
 
             try {
-                const response = await fetch(GAS_WEB_APP_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        itemName,
-                        stockIn,
-                        stockOut
-                    }),
-                    headers: {
-                        'Content-Type': 'text/plain;charset=utf-8',
-                    }
-                });
-
+                // Fetch data from GAS doGet endpoint
+                // リダイレクトに対応させるための設定
+                const response = await fetch(GAS_WEB_APP_URL, { redirect: 'follow' });
                 const result = await response.json();
-                
+
                 if (result.status === 'success') {
-                    showStatus(`${itemName}の在庫を更新しました！ (現在庫: ${result.currentStock})`, 'success');
-                    form.reset();
-                    document.getElementById('stockIn').value = 0;
-                    document.getElementById('stockOut').value = 0;
+                    renderGrid(result.data);
+                    
+                    const now = new Date();
+                    lastUpdateText.textContent = `最終更新: ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
                 } else {
-                    showStatus('エラーが発生しました: ' + result.message, 'error');
+                    throw new Error(result.message);
                 }
-
             } catch (error) {
-                console.error(error);
-                showStatus('送信に失敗しました。設定を確認してください。', 'error');
+                console.error("Fetch Error:", error);
+                errorState.style.display = 'block';
+                grid.innerHTML = '';
             } finally {
-                submitBtn.classList.remove('is-loading');
-                submitBtn.disabled = false;
+                refreshBtn.classList.remove('spinning');
             }
-        });
-
-        function showStatus(message, type) {
-            statusMessage.textContent = message;
-            statusMessage.className = `status-message status-${type} show`;
-            
-            // Hide after 5 seconds
-            setTimeout(() => {
-                statusMessage.classList.remove('show');
-            }, 5000);
         }
+
+        function renderGrid(data) {
+            grid.innerHTML = '';
+            
+            if (data.length === 0) {
+                grid.innerHTML = '<div style="color:var(--text-muted); padding:20px; grid-column: 1 / -1; text-align: center;">まだ在庫データがありません。<br>Googleフォームからデータを入力してください。</div>';
+                return;
+            }
+
+            data.forEach((item, index) => {
+                const isLowStock = item.stock <= 2;
+                
+                const card = document.createElement('div');
+                card.className = `card ${isLowStock ? 'low-stock' : ''}`;
+                card.style.animationDelay = `${index * 0.1}s`;
+
+                card.innerHTML = `
+                    <div class="badge">要発注</div>
+                    <div class="item-name">${escapeHTML(item.itemName)}</div>
+                    <div class="stock-level">
+                        <span class="stock-number">${item.stock}</span>
+                        <span class="stock-label">個</span>
+                    </div>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+
+        function escapeHTML(str) {
+            return String(str)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // イベントリスナー設定
+        refreshBtn.addEventListener('click', fetchStockData);
+
+        // 初回読み込み
+        fetchStockData();
     </script>
 </body>
 </html>

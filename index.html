@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,12 +19,16 @@
             --glass-border: rgba(255, 255, 255, 0.1);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
         body {
             font-family: 'Outfit', sans-serif;
             background: #020617;
-            background-image: 
+            background-image:
                 radial-gradient(at 0% 0%, rgba(30, 27, 75, 1) 0px, transparent 50%),
                 radial-gradient(at 100% 100%, rgba(15, 23, 42, 1) 0px, transparent 50%);
             color: var(--text-main);
@@ -51,7 +56,9 @@
             margin-bottom: 10px;
         }
 
-        .header p { color: var(--text-muted); }
+        .header p {
+            color: var(--text-muted);
+        }
 
         .dashboard-controls {
             display: flex;
@@ -104,13 +111,15 @@
 
         .card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
 
         .card.low-stock::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0;
+            top: 0;
+            left: 0;
+            right: 0;
             height: 4px;
             background: var(--danger);
         }
@@ -165,20 +174,76 @@
 
         /* Loading Skeleton */
         .skeleton {
-            background: linear-gradient(90deg, rgba(30,41,59,0.5) 25%, rgba(51,65,85,0.5) 50%, rgba(30,41,59,0.5) 75%);
+            background: linear-gradient(90deg, rgba(30, 41, 59, 0.5) 25%, rgba(51, 65, 85, 0.5) 50%, rgba(30, 41, 59, 0.5) 75%);
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             border-radius: 8px;
         }
 
-        .skeleton-title { height: 24px; width: 60%; margin-bottom: 16px; }
-        .skeleton-number { height: 48px; width: 40%; }
+        .skeleton-title {
+            height: 24px;
+            width: 60%;
+            margin-bottom: 16px;
+        }
 
-        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+        .skeleton-number {
+            height: 48px;
+            width: 40%;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+            }
+        }
 
         .error-state {
             text-align: center;
@@ -189,9 +254,9 @@
             border: 1px dashed rgba(239, 68, 68, 0.3);
             display: none;
         }
-
     </style>
 </head>
+
 <body>
 
     <div class="container">
@@ -205,7 +270,8 @@
                 最終更新: --
             </div>
             <button class="refresh-btn" id="refreshBtn">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="23 4 23 10 17 10"></polyline>
                     <polyline points="1 20 1 14 7 14"></polyline>
                     <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
@@ -221,9 +287,18 @@
 
         <div class="grid" id="inventoryGrid">
             <!-- 初期ローディング用のスケルトンUI -->
-            <div class="card"><div class="skeleton skeleton-title"></div><div class="skeleton skeleton-number"></div></div>
-            <div class="card"><div class="skeleton skeleton-title"></div><div class="skeleton skeleton-number"></div></div>
-            <div class="card"><div class="skeleton skeleton-title"></div><div class="skeleton skeleton-number"></div></div>
+            <div class="card">
+                <div class="skeleton skeleton-title"></div>
+                <div class="skeleton skeleton-number"></div>
+            </div>
+            <div class="card">
+                <div class="skeleton skeleton-title"></div>
+                <div class="skeleton skeleton-number"></div>
+            </div>
+            <div class="card">
+                <div class="skeleton skeleton-title"></div>
+                <div class="skeleton skeleton-number"></div>
+            </div>
         </div>
     </div>
 
@@ -254,7 +329,7 @@
 
                 if (result.status === 'success') {
                     renderGrid(result.data);
-                    
+
                     const now = new Date();
                     lastUpdateText.textContent = `最終更新: ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
                 } else {
@@ -271,7 +346,7 @@
 
         function renderGrid(data) {
             grid.innerHTML = '';
-            
+
             if (data.length === 0) {
                 grid.innerHTML = '<div style="color:var(--text-muted); padding:20px; grid-column: 1 / -1; text-align: center;">まだ在庫データがありません。<br>Googleフォームからデータを入力してください。</div>';
                 return;
@@ -279,7 +354,7 @@
 
             data.forEach((item, index) => {
                 const isLowStock = item.stock <= 2;
-                
+
                 const card = document.createElement('div');
                 card.className = `card ${isLowStock ? 'low-stock' : ''}`;
                 card.style.animationDelay = `${index * 0.1}s`;
@@ -292,7 +367,7 @@
                         <span class="stock-label">個</span>
                     </div>
                 `;
-                
+
                 grid.appendChild(card);
             });
         }
@@ -313,4 +388,5 @@
         fetchStockData();
     </script>
 </body>
+
 </html>
